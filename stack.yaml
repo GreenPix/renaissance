@@ -1,0 +1,22 @@
+flags:
+  vita-cera:
+    r2purs: True
+extra-package-dbs: []
+extra-deps:
+  - servant-purescript-0.4.0.0
+packages:
+  - './vita-cera'
+  - './bz'
+  - location:
+      git: https://github.com/lethom/auth-token.git
+      commit: e55bb34af8cabb479e527c1629171fadfc861c61
+    subdirs:
+      - servant-auth-token-api
+      - servant-auth-token-server
+      - auth-token
+      - auth-token-persistent
+      - token
+      - token-persistent
+      - token-random
+      - token-aeson
+resolver: lts-7.0

@@ -1,0 +1,21 @@
+{
+  "name": "test",
+  "description": "",
+  "main": "main.js",
+  "authors": [
+    "Thomas Letan <contact@thomasletan.fr>"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "purescript-console": "^1.0.0",
+    "purescript-servant-support": "^3.0.0"
+  }
+}
