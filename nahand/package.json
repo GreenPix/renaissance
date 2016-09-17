@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "main": "main.js",
   "dependencies": {
+    "react": "^15.3.1",
+    "react-dom": "^15.3.1",
     "xhr2": "^0.1.3"
   }
 }
