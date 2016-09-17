@@ -2,24 +2,21 @@ module Main where
 
 import Prelude (show, bind, ($), Unit, flip, void, (>>=), (<<<), (<$>))
 
-import Control.Monad.Aff (launchAff, Aff)
+import Control.Monad.Aff (launchAff)
 import Control.Monad.Aff.Class
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class
 import Control.Monad.Eff.Console (log, CONSOLE)
 import Control.Monad.Eff.Exception (EXCEPTION)
-import Control.Monad.Except (runExcept)
 import Control.Monad.Trans (lift)
-import Control.Monad.Except.Trans (ExceptT, runExceptT)
-import Control.Monad.Reader.Trans (ReaderT, runReaderT)
-import DOM.HTML.Types (htmlDocumentToParentNode) as DOM
 import DOM (DOM)
 import DOM.HTML (window) as DOM
+import DOM.HTML.Types (htmlDocumentToParentNode) as DOM
 import DOM.HTML.Window (document) as DOM
 import DOM.Node.ParentNode (querySelector) as DOM
 import Data.Either (Either(..))
 import Data.Maybe (fromJust)
-import Data.Monoid
+import Data.Monoid (append)
 import Data.Nullable (toMaybe)
 import Network.HTTP.Affjax (AJAX)
 import Partial.Unsafe (unsafePartial)
@@ -33,13 +30,16 @@ import React.DOM as R
 import React.DOM.Props as RP
 import ReactDOM as RDOM
 
+import Component.Base
+import Component.LogIn as LogIn
+
 data State = Connected Int | Anonymous | Waiting
 data Action = LogInWith Int | LogOut
 
 render :: forall t. T.Render State t Action
 render dispatch _ Anonymous _ =
   [ R.p' [ R.text "You are not connected"
-         , R.button [ RP.onClick \_ -> dispatch $ LogInWith 0 ]
+         , R.button [ RP.onClick \_ -> dispatch $ LogInWith 1 ]
                     [ R.text "Log in" ]
          ]
   ]
@@ -57,7 +57,7 @@ render dispatch _ Waiting _ =
 performAction :: forall eff b. T.PerformAction (console :: CONSOLE, ajax :: AJAX | eff) State b Action
 performAction (LogInWith i) _ _ = do
   void (T.cotransform $ \_ -> Waiting)
-  res <- lift $ runEffect settings postAccountsNew
+  res <- lift $ runBzEffect settings postAccountsNew
   case res of Right id -> do lift $ log' $ "logged as " `append` show id
                              void (T.cotransform $ \_ -> Connected id)
               Left _   -> do lift $ log' "..."
@@ -71,32 +71,9 @@ initialState = Anonymous
 spec :: forall eff b. T.Spec (ajax :: AJAX, console :: CONSOLE | eff) State b Action
 spec = T.simpleSpec performAction render
 
-type Settings = SPSettings_ SPParams_
-
-type APIEffect eff = ReaderT Settings (ExceptT AjaxError (Aff (ajax :: AJAX | eff)))
-
-runEffect :: forall a eff. Settings -> APIEffect eff a -> Aff (ajax :: AJAX | eff) (Either AjaxError a)
-runEffect settings api = runExceptT $ runReaderT api settings
-
-log' :: forall eff m. (MonadEff (console :: CONSOLE | eff) m) => String -> m Unit
-log' x = liftEff $ log x
-
-settings = defaultSettings $ SPParams_ { baseURL : "http://localhost:8080/" }
-
 main :: forall eff. Eff (dom :: DOM, console :: CONSOLE, ajax :: AJAX, err :: EXCEPTION | eff) Unit
 main = do
-
-  let component = T.createClass spec initialState
+  let component = T.createClass (LogIn.spec settings) LogIn.initialState
   document <- DOM.window >>= DOM.document
   container <- unsafePartial (fromJust <<< toMaybe <$> DOM.querySelector "#app" (DOM.htmlDocumentToParentNode document))
-  RDOM.render (R.createFactory component {}) container
-
-  log "done"
-
-  -- launchAff $ do
-  --   id <- runEffect settings postAccountsNew
-
-  --   case id of Right id -> log' $ show id
-  --              Left err -> log' ":("
-
-  -- log "bye"
+  void $ RDOM.render (R.createFactory component {}) container

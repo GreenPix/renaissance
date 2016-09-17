@@ -9,7 +9,7 @@ packages:
   - './bz'
   - location:
       git: https://github.com/lethom/auth-token.git
-      commit: e55bb34af8cabb479e527c1629171fadfc861c61
+      commit: 02cfd1e2cfaec99336aed7546a9353cff784580a
     subdirs:
       - servant-auth-token-api
       - servant-auth-token-server

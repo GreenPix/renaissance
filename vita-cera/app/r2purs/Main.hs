@@ -27,6 +27,11 @@ import Language.PureScript.Bridge.TypeParameters
 
 import Renaissance.Api.Bz
 
+tokenBridge :: BridgePart
+tokenBridge = do
+    typeName ^== "Token"
+    return psString
+
 bsBridge :: BridgePart
 bsBridge = do
     typeName ^== "ByteString"
@@ -49,7 +54,7 @@ data Command =
 instance ParseRecord Command
 
 data RenaissanceBridge
-renaissanceBridge = bsBridge <|> int64Bridge <|> utcBridge <|> defaultBridge
+renaissanceBridge = tokenBridge <|> bsBridge <|> int64Bridge <|> utcBridge <|> defaultBridge
 
 instance HasBridge RenaissanceBridge where
     languageBridge _ = buildBridge renaissanceBridge
@@ -61,7 +66,6 @@ bzTypes :: [SumType 'Haskell]
 bzTypes = [ mkSumType (Proxy :: Proxy WhoAmIResponse)
           , mkSumType (Proxy :: Proxy TokenGetRouteBody)
           , mkSumType (Proxy :: Proxy PostTokenRefreshReq)
-          , mkSumType (Proxy :: Proxy (Token A))
           , mkSumType (Proxy :: Proxy Access)
           , mkSumType (Proxy :: Proxy Refresh)
           , mkSumType (Proxy :: Proxy (EphemeralToken A))
