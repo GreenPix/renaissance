@@ -10,7 +10,7 @@ module Renaissance.Api.Bz
 
 import Servant.API
 import Servant.Auth.Token.Api
-import GHC.Int
+import Data.UUID
 
 import Renaissance.Api.Bz.Data
 
@@ -21,4 +21,4 @@ type ForeignBzApi = ForeignAuthentApi TokenGetRouteBody WhoAmIResponse
 type BzApi = AuthentApi TokenGetRouteBody WhoAmIResponse
         :<|> BzPublicApi
 
-type BzPublicApi = "accounts" :> "new" :> PostCreated '[JSON] Int64
+type BzPublicApi = "accounts" :> "new" :> PostCreated '[JSON] UUID

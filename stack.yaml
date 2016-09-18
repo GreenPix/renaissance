@@ -4,6 +4,7 @@ flags:
 extra-package-dbs: []
 extra-deps:
   - servant-purescript-0.4.0.0
+  - uuid-aeson-0.1.0.0
 packages:
   - './vita-cera'
   - './bz'
