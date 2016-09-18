@@ -12,7 +12,7 @@ import ReactDOM as RDOM
 import Unsafe.Coerce (unsafeCoerce) -- TODO: find a way to remove it
 import Control.Monad.Eff.Console (log, CONSOLE)
 import Network.HTTP.Affjax (AJAX)
-import ServerAPI (postAccountsNew, postTokenGet)
+import GenBzApi (postAccountsNew, postTokenGet) as Bz
 import Renaissance.Api.Bz.Data (TokenGetRouteBody(..))
 import Control.Monad.Trans (lift)
 import Servant.PureScript.Affjax (errorToString)
@@ -57,7 +57,7 @@ performAction s (LogAs st) x y = do
 
   let body = TokenGetRouteBody { email : st }
 
-  res <- lift $ runBzEffect s $ postTokenGet body
+  res <- lift $ runBzEffect s $ Bz.postTokenGet body
   case res of Right ag -> do void (T.cotransform $ \_ -> initialState)
                              performAction s (ConnectionSucceed ag) x y
               Left err   -> do lift $ log' $ errorToString err

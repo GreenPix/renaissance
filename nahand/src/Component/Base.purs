@@ -7,7 +7,7 @@ import Control.Monad.Except (runExcept)
 import Control.Monad.Except.Trans (ExceptT, runExceptT)
 import Control.Monad.Reader.Trans (ReaderT, runReaderT)
 import Servant.PureScript.Settings (SPSettings_(..), defaultSettings)
-import ServerAPI (SPParams_) as Bz
+import GenBzApi (SPParams_(..)) as Bz
 import Data.Either (Either(..))
 import Control.Monad.Eff.Console (log, CONSOLE)
 import Control.Monad.Eff (Eff)
@@ -16,8 +16,6 @@ import Servant.PureScript.Affjax (AjaxError)
 import Network.HTTP.Affjax (AJAX)
 import Data.Argonaut.Generic.Aeson (decodeJson, encodeJson)
 import Data.Generic (gShow)
-
-import ServerAPI (SPParams_(..))
 
 type BzSettings = SPSettings_ Bz.SPParams_
 
@@ -45,7 +43,7 @@ settings :: NahandSettings
 settings = NahandSettings { bzSettings : SPSettings_ { decodeJson : decodeJson
                                                      , encodeJson : encodeJson
                                                      , toURLPiece : gShow
-                                                     , params : SPParams_ { baseURL : "http://localhost:8080/" }
+                                                     , params : Bz.SPParams_ { baseURL : "http://localhost:8080/" }
                                                      }
                           }
 

@@ -13,7 +13,6 @@ import ReactDOM as RDOM
 import Unsafe.Coerce (unsafeCoerce) -- TODO: find a way to remove it
 import Control.Monad.Eff.Console (log, CONSOLE)
 import Network.HTTP.Affjax (AJAX)
-import ServerAPI (postAccountsNew, postTokenGet)
 import Renaissance.Api.Bz.Data (TokenGetRouteBody(..))
 import Control.Monad.Trans (lift)
 import Servant.PureScript.Affjax (errorToString)
