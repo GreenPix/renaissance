@@ -32,6 +32,7 @@ import ReactDOM as RDOM
 
 import Component.Base
 import Component.LogIn as LogIn
+import Component.Nahand as Nahand
 
 data State = Connected Int | Anonymous | Waiting
 data Action = LogInWith Int | LogOut
@@ -73,7 +74,7 @@ spec = T.simpleSpec performAction render
 
 main :: forall eff. Eff (dom :: DOM, console :: CONSOLE, ajax :: AJAX, err :: EXCEPTION | eff) Unit
 main = do
-  let component = T.createClass (LogIn.spec settings) LogIn.initialState
+  let component = T.createClass (Nahand.spec settings) Nahand.initialState
   document <- DOM.window >>= DOM.document
   container <- unsafePartial (fromJust <<< toMaybe <$> DOM.querySelector "#app" (DOM.htmlDocumentToParentNode document))
   void $ RDOM.render (R.createFactory component {}) container

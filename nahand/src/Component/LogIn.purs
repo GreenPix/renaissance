@@ -1,6 +1,6 @@
 module Component.LogIn where
 
-import Prelude (($), void, bind, (>>=), show)
+import Prelude (($), void, bind, (>>=), show, pure, unit)
 
 import Data.Monoid (append)
 import Thermite as T
@@ -21,11 +21,11 @@ import Component.Base
 
 import Auth.Token (AccessGrant)
 
-data State = Form String | Waiting | Connected AccessGrant | Error
+data State = Form String | Waiting | Error | Connected AccessGrant
 
 initialState = Form ""
 
-data Action = Change String | LogAs String
+data Action = Change String | LogAs String | ConnectionSucceed AccessGrant
 
 render :: forall props. T.Render State props Action
 render dispatch _ (Form st) _ =
@@ -52,16 +52,17 @@ performAction :: forall eff b.
               -> T.PerformAction (console :: CONSOLE, ajax :: AJAX | eff) State b Action
 performAction _ (Change st) _ _ = do
   void (T.cotransform $ \_ -> Form st)
-performAction s (LogAs st) _ _ = do
+performAction s (LogAs st) x y = do
   void (T.cotransform $ \_ -> Waiting)
 
   let body = TokenGetRouteBody { email : st }
 
   res <- lift $ runBzEffect s $ postTokenGet body
-  case res of Right ag -> do void (T.cotransform $ \_ -> Connected ag)
+  case res of Right ag -> do void (T.cotransform $ \_ -> initialState)
+                             performAction s (ConnectionSucceed ag) x y
               Left err   -> do lift $ log' $ errorToString err
                                void (T.cotransform $ \_ -> Error)
-
+performAction _ (ConnectionSucceed ag) _ _ = void (T.cotransform $ \_ -> Connected ag)
 spec :: forall eff b. NahandSettings
                    -> T.Spec (ajax :: AJAX, console :: CONSOLE | eff) State b Action
 spec st = T.simpleSpec (performAction st) render

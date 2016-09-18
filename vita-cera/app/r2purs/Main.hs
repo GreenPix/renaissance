@@ -27,6 +27,9 @@ import Language.PureScript.Bridge.TypeParameters
 
 import Renaissance.Api.Bz
 
+-- The token bridge is necessary because the implementation of FromJSON and
+-- ToJSON are not standard. Therefore, we shadow the type with the String
+-- type.
 tokenBridge :: BridgePart
 tokenBridge = do
     typeName ^== "Token"
