@@ -1,5 +1,5 @@
 src/Renaissance
-src/ServerAPI.purs
+src/Gen*Api.purs
 src/Auth
 src/Data
 src/Servant

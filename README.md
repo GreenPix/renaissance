@@ -14,3 +14,7 @@ library.
 ## bz
 
 bz is the authentication server of the project.
+
+## gjanajo
+
+Gjanajo is the resource manager of the Project.

@@ -5,7 +5,8 @@ module Renaissance.Api.Bz.Data where
 import GHC.Generics
 import Data.Text (Text)
 import Data.Aeson
-import GHC.Int
+import Data.UUID.Aeson
+import Data.UUID
 
 data TokenGetRouteBody = TokenGetRouteBody
                        { email :: Text }
@@ -15,7 +16,7 @@ instance FromJSON TokenGetRouteBody
 instance ToJSON TokenGetRouteBody
   
 data WhoAmIResponse = WhoAmIResponse
-                    { id :: Int64 }
+                    { id :: UUID }
   deriving (Generic)
 
 instance FromJSON WhoAmIResponse

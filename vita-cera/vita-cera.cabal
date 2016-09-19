@@ -21,8 +21,12 @@ flag r2purs
   default:           False
 
 library
-  exposed-modules:   Renaissance.Api.Bz
+  exposed-modules:   Renaissance.Api.Base
+                   , Renaissance.Api.Bz
                    , Renaissance.Api.Bz.Data
+                   , Renaissance.Api.Gjanajo
+                   , Renaissance.Api.Gjanajo.Data.Account
+                   , Renaissance.Api.Gjanajo.Data.Character
   -- other-modules:       
   -- other-extensions:    
   build-depends:     base >=4.9 && <4.10
@@ -31,6 +35,10 @@ library
                    , auth-token
                    , text
                    , aeson
+                   , http-api-data
+                   , time
+                   , uuid
+                   , uuid-aeson
   hs-source-dirs:    src
   default-language:  Haskell2010
 
@@ -39,13 +47,14 @@ executable r2purs
   main-is:           Main.hs
   if flag(r2purs)
     build-depends:   base >=4.9 && <4.10
-                   , servant-purescript >= 0.4 && < 5
+                   , servant-purescript >= 0.4 && < 0.5
                    , auth-token
                    , optparse-generic
                    , purescript-bridge
                    , servant
                    , servant-auth-token-api
                    , text
+                   , lens
                    , token
                    , vita-cera
     buildable:       True

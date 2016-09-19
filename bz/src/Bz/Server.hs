@@ -36,5 +36,5 @@ bzApi = Proxy
 bzd :: BzConfig
     -> Application
 bzd conf = logStdout $ serveWithContext bzApi
-                                        (authTokenContext (pool conf) getData authentErrorHandler)
+                                        (authTokenContext (pool conf) (getData conf) authentErrorHandler)
                                         (authServe conf server)

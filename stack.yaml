@@ -4,12 +4,14 @@ flags:
 extra-package-dbs: []
 extra-deps:
   - servant-purescript-0.4.0.0
+  - uuid-aeson-0.1.0.0
 packages:
   - './vita-cera'
+  - './vita-cera-client'
   - './bz'
   - location:
       git: https://github.com/lethom/auth-token.git
-      commit: 02cfd1e2cfaec99336aed7546a9353cff784580a
+      commit: 51443df28771ea6b2fea457ca83872f6d23890b5
     subdirs:
       - servant-auth-token-api
       - servant-auth-token-server
