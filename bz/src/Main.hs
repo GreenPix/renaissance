@@ -12,10 +12,12 @@ import Servant.Client (BaseUrl(..), Scheme(..))
 
 import Bz.Monad
 import Bz.Server
+import Bz.Model
 
 main :: IO ()
 main = do pool <- runNoLoggingT $ createSqlitePool "bz.sqlite" 10
           initAuthenticator pool
+          runSqlPool (runMigration bzMigrateAuth) pool
           manager <- newManager defaultManagerSettings
 
           let conf = BzConfig pool manager (BaseUrl Http "localhost" 8081 "")

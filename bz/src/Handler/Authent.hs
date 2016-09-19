@@ -22,19 +22,21 @@ import Renaissance.Api.Gjanajo.Data.Account (AccountInformation, uuid)
 import Renaissance.Client.Gjanajo (accountsByUuid, accountsNewPost)
 
 import Bz.Monad
+import Bz.Model
 
 type instance AuthServerData TokenProtect = UUID
 
-getData :: Manager -> BaseUrl -> Identity -> IO UUID
-getData manager base id = do
-    -- TODO read uuid in db
-    u <- randomIO
-    res <- queryGjanajo' (accountsByUuid u) manager base
-    case res of Right acc -> return $ uuid acc
-                Left  err -> do fail $ "error: " ++ (show err)
+getData :: BzConfig -> Identity -> IO UUID
+getData conf id = do
+    u <- runSqlPool (getUuid id) (pool conf)
+    case u of Just u -> do res <- queryGjanajo' (accountsByUuid u) (http conf) (gjanajo conf)
+                           case res of Right acc -> return $ uuid acc
+                                       Left  err -> do fail $ "error: " ++ (show err)
+              _ -> fail $ "error: no uuid found"
 
+-- TODO use the email to find the correct user
 getIdentityHandler :: TokenGetRouteBody -> BzM Identity
-getIdentityHandler _ = return $ toSqlKey 1
+getIdentityHandler (TokenGetRouteBody _) = return $ toSqlKey 1
 
 whoAmIHandler :: UUID -> BzM WhoAmIResponse
 whoAmIHandler = return . WhoAmIResponse
@@ -45,7 +47,8 @@ newHandler = do
     res <- queryGjanajo accountsNewPost
 
     case res of Right uuid -> do id <- liftIO $ newIdentity auth
-                                 -- TODO store link id,uuid in db
+                                 runQuery $ newLink id uuid
+
                                  return uuid
                 Left err   -> throwError err409 { errBody = "Cannot create new account for unknown reason. Try later" }
 

@@ -26,6 +26,9 @@ executable bz
                      , auth-token
                      , mtl
                      , transformers
+                     , persistent
+                     , monad-control
+                     , persistent-template
                      , persistent-sqlite
                      , servant-auth-token-api
                      , servant-auth-token-server

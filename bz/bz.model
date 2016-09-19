@@ -1,0 +1,5 @@
+TokenOwner
+  identity       Identity
+  owner          UUID
+  UniqueIdentity identity
+  UniqueOwner    owner

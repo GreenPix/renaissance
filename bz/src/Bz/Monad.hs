@@ -1,5 +1,6 @@
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleContexts           #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
 module Bz.Monad where
@@ -7,7 +8,7 @@ module Bz.Monad where
 import Auth.Token.Persistent
 import Control.Monad.Except (ExceptT, runExceptT)
 import Control.Monad.Reader (ReaderT, ask, liftIO)
-import Database.Persist.Sqlite (ConnectionPool)
+import Database.Persist.Sqlite (ConnectionPool, runSqlPool, SqlPersistT)
 import Servant.Client (BaseUrl, ServantError)
 import Servant (ServantErr)
 import Servant.Auth.Token.Server
@@ -20,6 +21,11 @@ data BzConfig = BzConfig { pool    :: ConnectionPool
                          }
 
 type BzM = ReaderT BzConfig (ExceptT ServantErr IO)
+
+runQuery :: SqlPersistT IO a
+         -> BzM a
+runQuery query = do p <- pool <$> ask
+                    liftIO $ runSqlPool query p
 
 queryGjanajo' :: (Manager -> BaseUrl -> ExceptT ServantError IO a)
               -> Manager
