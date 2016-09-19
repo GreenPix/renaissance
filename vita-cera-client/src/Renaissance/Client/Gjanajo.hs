@@ -7,7 +7,6 @@ import Network.HTTP.Client (Manager)
 import Servant.API ((:<|>) ((:<|>)), NoContent)
 import Servant.Client (client, BaseUrl, ServantError, AuthenticateReq)
 import Servant.Common.Req (Req, addHeader)
-import Web.HttpApiData (ToHttpApiData(..))
 
 import Renaissance.Api.Base
 import Renaissance.Api.Gjanajo (GjanajoApi)
@@ -17,15 +16,13 @@ import qualified Renaissance.Api.Gjanajo.Data.Character as C (CharacterInformati
 gjanajoApi :: Proxy GjanajoApi
 gjanajoApi = Proxy
 
-accountsGet :: Bool
-            -> Maybe Int
+accountsGet :: Maybe Int
             -> Maybe Int
             -> Manager
             -> BaseUrl
             -> ExceptT ServantError IO [A.AccountInformation]
 
 accountsByUuid :: UUID
-               -> Bool
                -> Manager
                -> BaseUrl
                -> ExceptT ServantError IO A.AccountInformation
@@ -40,6 +37,3 @@ accountsNewPost :: Manager
                 -> ExceptT ServantError IO UUID
 
 accountsGet :<|> accountsByUuid :<|> accountsDelete :<|> accountsNewPost = client gjanajoApi
-
-instance ToHttpApiData UUID where
-    toQueryParam = toText

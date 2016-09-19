@@ -27,7 +27,6 @@ library
                      , servant
                      , servant-client
                      , uuid
-                     , http-api-data
                      , transformers
                      , vita-cera == 0.0.0
                      , auth-token

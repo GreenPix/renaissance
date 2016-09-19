@@ -30,7 +30,12 @@ executable bz
                      , servant-auth-token-api
                      , servant-auth-token-server
                      , servant-server
-                     , vita-cera
+                     , servant-client
+                     , http-client
+                     , vita-cera == 0.0.0
+                     , vita-cera-client == 0.0.0
+                     , uuid
+                     , random
                      , wai
                      , wai-extra
                      , warp

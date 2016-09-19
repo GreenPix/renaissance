@@ -35,6 +35,7 @@ library
                    , auth-token
                    , text
                    , aeson
+                   , http-api-data
                    , time
                    , uuid
                    , uuid-aeson
