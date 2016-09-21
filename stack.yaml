@@ -3,12 +3,13 @@ flags:
     r2purs: True
 extra-package-dbs: []
 extra-deps:
-  - servant-purescript-0.4.0.0
+  - servant-purescript-0.4.0.1
   - uuid-aeson-0.1.0.0
 packages:
   - './vita-cera'
   - './vita-cera-client'
   - './bz'
+  - './gjanajo'
   - location:
       git: https://github.com/lethom/auth-token.git
       commit: 51443df28771ea6b2fea457ca83872f6d23890b5
