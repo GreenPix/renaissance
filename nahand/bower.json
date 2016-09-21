@@ -16,7 +16,7 @@
   ],
   "dependencies": {
     "purescript-console": "^1.0.0",
-    "purescript-servant-support": "^3.0.0",
+    "purescript-servant-support": "^3.0.1",
     "purescript-thermite": "^2.0.0",
     "purescript-dom": "^2.0.1"
   },
