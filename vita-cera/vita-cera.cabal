@@ -47,7 +47,7 @@ executable r2purs
   main-is:           Main.hs
   if flag(r2purs)
     build-depends:   base >=4.9 && <4.10
-                   , servant-purescript >= 0.4 && < 0.5
+                   , servant-purescript >= 0.5 && < 0.6
                    , auth-token
                    , optparse-generic
                    , purescript-bridge
