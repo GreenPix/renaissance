@@ -45,7 +45,10 @@ render dispatch _ Error _ =
   [ R.p' [ R.text "Error with the server"
          ]
   ]
-render dispatch _ _ _ = []
+render dispatch _ (Connected ag) _ = [ R.p' [ R.text "Success" ]
+                                     , R.button [ RP.onClick \e -> dispatch $ ConnectionSucceed ag ]
+                                                [ R.text "Continue" ]
+                                     ]
 
 performAction :: forall eff b.
                  NahandSettings
@@ -57,12 +60,13 @@ performAction s (LogAs st) x y = do
 
   let body = TokenGetRouteBody { email : st }
 
+  void (T.cotransform \_ -> Waiting)
   res <- lift $ runBzEffect s $ Bz.postTokenGet body
-  case res of Right ag -> do void (T.cotransform $ \_ -> initialState)
-                             performAction s (ConnectionSucceed ag) x y
+  case res of Right ag -> do void (T.cotransform \_ -> Connected ag)
               Left err   -> do lift $ log' $ errorToString err
                                void (T.cotransform $ \_ -> Error)
 performAction _ (ConnectionSucceed ag) _ _ = void (T.cotransform $ \_ -> Connected ag)
+
 spec :: forall eff b. NahandSettings
                    -> T.Spec (ajax :: AJAX, console :: CONSOLE | eff) State b Action
 spec st = T.simpleSpec (performAction st) render
