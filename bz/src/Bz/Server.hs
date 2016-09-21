@@ -7,7 +7,7 @@ import Control.Monad.Except
 import Control.Monad.Reader
 import Database.Persist.Sqlite
 import Network.Wai
-import Network.Wai.Middleware.RequestLogger
+import Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import Servant
 import Servant.Auth.Token.Server
 
@@ -35,6 +35,6 @@ bzApi = Proxy
 
 bzd :: BzConfig
     -> Application
-bzd conf = logStdout $ serveWithContext bzApi
-                                        (authTokenContext (pool conf) (getData conf) authentErrorHandler)
-                                        (authServe conf server)
+bzd conf = logStdoutDev $ serveWithContext bzApi
+                                           (authTokenContext (pool conf) (getData conf) authentErrorHandler)
+                                           (authServe conf server)
