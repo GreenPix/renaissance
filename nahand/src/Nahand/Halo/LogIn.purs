@@ -1,22 +1,22 @@
 module Nahand.Halo.LogIn
   ( State
-  , Query
+  , Query(..)
   , login
   , initialState
-  , loginEff
+  , LoginEff
   ) where
 
 import Prelude
-import Control.Monad.Aff (Aff)
-import Control.Monad.Eff.Console (CONSOLE, log)
-import Control.Apply ((*>))
-import Data.Functor (($>))
+import Control.Monad.Aff                (Aff)
+import Control.Monad.Eff.Console        (CONSOLE, log)
+import Control.Apply                    ((*>))
+import Data.Functor                     (($>))
 import Data.Eq
 import Halogen.Query                    (action)
-import Halogen                          (fromEff, get, Component, component, ComponentHTML, ComponentDSL, modify)
+import Halogen                          (HalogenEffects, fromEff, get, Component, ComponentHTML, ComponentDSL, modify)
 import Halogen.Component                (lifecycleComponent)
 import Halogen.HTML.Core                (HTML, className)
-import Halogen.HTML.Indexed             (h1_, text, div_, div, button, input) as H
+import Halogen.HTML.Indexed             (h2_, text, div_, div, button, input) as H
 import Halogen.HTML.Events.Indexed      (onKeyDown, onValueInput, onClick, input_, input) as E
 import Halogen.HTML.Events.Types        (KeyboardEvent) as E
 import Halogen.HTML.Properties.Indexed  (tabIndex, id_, autofocus, value, disabled, class_) as P
@@ -29,7 +29,7 @@ arrowUP = 38.0
 arrowDOWN :: Number
 arrowDOWN = 40.0
 
-type LoginEff eff = Aff (focus :: FOCUS | eff)
+type LoginEff eff = HalogenEffects (focus :: FOCUS | eff)
 
 data Focus = Form | Button
 derive instance eqFocus :: Eq Focus
@@ -45,6 +45,12 @@ changeFocus :: State -> State
 changeFocus (State o) = if o.focus == Form
                         then State $ o { focus = Button }
                         else State $ o { focus = Form }
+
+data Query a = FocusChange a
+             | UpdateEmail String a
+             | Submitting a
+             | Init a
+             | GetEmail (String -> a)
 
 emailInput :: forall p. State -> HTML p (Query Unit)
 emailInput (State o) =
@@ -78,15 +84,8 @@ initialState = State { emailValue: ""
                      , focus:      Form
                      }
 
-data Query a = FocusChange a
-             | StartTyping a
-             | UpdateEmail String a
-             | Submitting a
-             | Init a
-             | GetEmail (String -> a)
-
 login :: forall eff
-       . Component State Query (LoginEff eff)
+       . Component State Query (Aff (LoginEff eff))
 login = lifecycleComponent { render:  render
                            , eval:     eval
                            , initializer: Just (action Init)
@@ -98,7 +97,7 @@ login = lifecycleComponent { render:  render
       H.div [ E.onKeyDown dealKey
             , P.tabIndex 0
             ]
-            [ H.h1_ [ H.text "Try login" ]
+            [ H.h2_ [ H.text "Login" ]
             , emailInput s
             , submitButton s
             ]
@@ -110,7 +109,7 @@ login = lifecycleComponent { render:  render
 
     
     eval :: Query
-         ~> ComponentDSL State Query (LoginEff eff)
+         ~> ComponentDSL State Query (Aff (LoginEff eff))
     eval (Init next) = do fromEff $ setFocus "login_input"
                           pure next
                           
@@ -118,8 +117,6 @@ login = lifecycleComponent { render:  render
                                  s <- get
                                  updateFocus s
                                  pure next
-
-    eval (StartTyping next) = pure next
 
     eval (UpdateEmail st next) = do modify $ setEmailValue st
                                     pure next

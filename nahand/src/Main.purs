@@ -4,18 +4,18 @@ import Prelude (bind, ($), Unit, void, (>>=), (<<<), (<$>))
 
 import Control.Monad.Eff         (Eff)
 import Control.Monad.Eff.Console (CONSOLE)
-import Halogen                   (runUI)
-import Halogen.Effects           (HalogenEffects)
+import Halogen                   (runUI, parentState)
 import Halogen.Util              (runHalogenAff, awaitBody)
-import Nahand.Halo.Master        (master, initialState)
+import Nahand.Halo.Master        (master, initialState, MasterEff)
 import Network.HTTP.Affjax       (AJAX)
+import Nahand.Focus              (FOCUS)
 
 -- to be used
 import Servant.PureScript.Settings (SPSettings_, defaultSettings)
 
 main :: forall eff
-      . Eff (HalogenEffects (console :: CONSOLE, ajax :: AJAX|eff)) Unit
+      . Eff (MasterEff) Unit
 main = do
   runHalogenAff $ do
     body <- awaitBody
-    void $ runUI master initialState body
+    void $ runUI master (parentState initialState) body
