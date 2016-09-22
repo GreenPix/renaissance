@@ -1,7 +1,10 @@
-module Component.Base where
+module Nahand.Halo.Base
+  ( runBzEffect
+  , NahandSettings
+  , settings
+  ) where
 
-import Prelude (show, bind, ($), Unit, flip, void, (>>=), (<<<), (<$>))
-
+import Prelude
 import Control.Monad.Aff (Aff)
 import Control.Monad.Except (runExcept)
 import Control.Monad.Except.Trans (ExceptT, runExceptT)
