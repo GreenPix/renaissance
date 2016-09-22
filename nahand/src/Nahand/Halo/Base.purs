@@ -1,7 +1,10 @@
-module Component.Base where
+module Nahand.Halo.Base
+  ( runBzEffect
+  , NahandSettings
+  , settings
+  ) where
 
-import Prelude (show, bind, ($), Unit, flip, void, (>>=), (<<<), (<$>))
-
+import Prelude
 import Control.Monad.Aff (Aff)
 import Control.Monad.Except (runExcept)
 import Control.Monad.Except.Trans (ExceptT, runExceptT)
@@ -42,7 +45,8 @@ settings :: NahandSettings
 settings = NahandSettings { bzSettings : SPSettings_ { decodeJson : decodeJson
                                                      , encodeJson : encodeJson
                                                      , toURLPiece : gDefaultToURLPiece
-                                                     , params : Bz.SPParams_ { baseURL : "http://localhost:8080/" }
+                                                     , params : Bz.SPParams_ {
+                                                       baseURL : "http://localhost:11000/" }
                                                      }
                           }
 

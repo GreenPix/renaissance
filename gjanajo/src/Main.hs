@@ -14,4 +14,4 @@ main = do pool <- runNoLoggingT $ createSqlitePool "gjanajo.sqlite" 10
 
           let conf = GjanajoConfig pool
 
-          run 8081 (gjanajod conf)
+          run 12000 (gjanajod conf)
