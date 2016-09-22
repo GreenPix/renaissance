@@ -20,6 +20,6 @@ main = do pool <- runNoLoggingT $ createSqlitePool "bz.sqlite" 10
           runSqlPool (runMigration bzMigrateAuth) pool
           manager <- newManager defaultManagerSettings
 
-          let conf = BzConfig pool manager (BaseUrl Http "localhost" 8081 "")
+          let conf = BzConfig pool manager (BaseUrl Http "localhost" 12000 "")
 
-          run 8080 (bzd conf)
+          run 11000 (bzd conf)

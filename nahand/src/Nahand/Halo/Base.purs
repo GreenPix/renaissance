@@ -45,7 +45,8 @@ settings :: NahandSettings
 settings = NahandSettings { bzSettings : SPSettings_ { decodeJson : decodeJson
                                                      , encodeJson : encodeJson
                                                      , toURLPiece : gDefaultToURLPiece
-                                                     , params : Bz.SPParams_ { baseURL : "http://localhost:8080/" }
+                                                     , params : Bz.SPParams_ {
+                                                       baseURL : "http://localhost:11000/" }
                                                      }
                           }
 
