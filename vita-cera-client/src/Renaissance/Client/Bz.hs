@@ -15,35 +15,42 @@ import Auth.Token (AccessGrant, AccessToken)
 import Control.Monad.Trans.Except (ExceptT)
 import Data.Proxy (Proxy(..))
 import Data.Token (toText)
+import Data.Text (Text)
 import Data.UUID (UUID)
 import Network.HTTP.Client (Manager)
-import Servant.API ((:<|>) ((:<|>)))
+import Servant.API ((:<|>) ((:<|>)), Headers, NoContent)
 import Servant.Auth.Token.Api (TokenProtect, PostTokenRefreshReq)
-import Servant.Client (client, BaseUrl, ServantError, AuthenticateReq)
+import Servant.Client (client, BaseUrl, ServantError, AuthenticateReq, ClientM)
 
 import Renaissance.Api.Base
-import Renaissance.Api.Bz (TokenGetRouteBody, BzApi, WhoAmIResponse)
+import Renaissance.Api.Bz (TokenGetRouteBody, BzApi, WhoAmIResponse, WithAuthToken)
 
 bzApi :: Proxy BzApi
 bzApi = Proxy
 
-postAccountsNew :: Manager
+postAccountsNew :: Text
+                -> Manager
                 -> BaseUrl
-                -> ExceptT ServantError IO UUID
+                -> ClientM (WithAuthToken NoContent)
+
+postAuthDev :: Text
+            -> Manager
+            -> BaseUrl
+            -> ClientM (WithAuthToken NoContent)
 
 postTokenGet :: TokenGetRouteBody
                 -> Manager
                 -> BaseUrl
-                -> ExceptT ServantError IO AccessGrant
+                -> ClientM AccessGrant
 
 postTokenRefresh :: PostTokenRefreshReq
                  -> Manager
                  -> BaseUrl
-                 -> ExceptT ServantError IO AccessGrant
+                 -> ClientM AccessGrant
 
 getWhoAmI :: AuthenticateReq TokenProtect
           -> Manager
           -> BaseUrl
-          -> ExceptT ServantError IO WhoAmIResponse
+          -> ClientM WhoAmIResponse
 
-((postTokenGet :<|> postTokenRefresh) :<|> getWhoAmI) :<|> postAccountsNew = client bzApi
+((postTokenGet :<|> postTokenRefresh) :<|> getWhoAmI) :<|> (postAuthDev :<|> postAccountsNew) = client bzApi

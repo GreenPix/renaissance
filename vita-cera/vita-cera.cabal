@@ -34,7 +34,10 @@ library
                    , servant-auth-token-api
                    , auth-token
                    , text
+                   , bytestring-conversion
                    , aeson
+                   , token
+                   , token-aeson
                    , http-api-data
                    , time
                    , uuid
