@@ -33,32 +33,31 @@ import Renaissance.Api.Gjanajo
 import qualified Renaissance.Api.Gjanajo.Data.Account as A
 import qualified Renaissance.Api.Gjanajo.Data.Character as C
 
--- The token bridge is necessary because the implementation of FromJSON and
--- ToJSON are not standard. Therefore, we shadow the type with the String
--- type. Same for UUID
+-- | This bridge is necessary because the implementation of FromJSON and
+-- ToJSON for the 'Token' type are not standard. Therefore, we shadow the
+-- type with the String type.
 tokenBridge :: BridgePart
 tokenBridge = do
     typeName ^== "Token"
     return psString
 
+-- | This bridge is necessary because the implementation of FromJSON and
+-- ToJSON for the 'UUID' type are not standard. Therefore, we shadow the
+-- type with the String type.
 uuidBridge :: BridgePart
 uuidBridge = do
     typeName ^== "UUID"
     return psString
 
+-- | This bridge is necessary because the implementation of FromJSON and
+-- ToJSON for the 'UTCTime' type are not standard. Therefore, we shadow the
+-- type with the String type.
 utcBridge :: BridgePart
 utcBridge = do
     typeName ^== "UTCTime"
     return psString
 
-data Command =
-    Command { bz      :: Bool
-            , gjanajo :: Bool
-            , to      :: FilePath }
-  deriving (Generic, Show)
-
-instance ParseRecord Command
-
+-- | Proxy typing to be able to use our previously defined bridges.
 data RenaissanceBridge
 renaissanceBridge = uuidBridge <|> tokenBridge <|> utcBridge <|> defaultBridge
 
@@ -68,6 +67,7 @@ instance HasBridge RenaissanceBridge where
 bzApi :: Proxy ForeignBzApi
 bzApi = Proxy
 
+-- | The bz types we want to export in purescript for @bz@ querying.
 bzTypes :: [SumType 'Haskell]
 bzTypes = [ mkSumType (Proxy :: Proxy WhoAmIResponse)
           , mkSumType (Proxy :: Proxy TokenGetRouteBody)
@@ -81,6 +81,7 @@ bzTypes = [ mkSumType (Proxy :: Proxy WhoAmIResponse)
 gjanajoApi :: Proxy ForeignGjanajoApi
 gjanajoApi = Proxy
 
+-- | The Gjanajo types we want to export in purescript for @gjanajo@ querying.
 gjanajoTypes :: [SumType 'Haskell]
 gjanajoTypes = [ mkSumType (Proxy :: Proxy A.AccountInformation)
                , mkSumType (Proxy :: Proxy C.CharacterInformation)
@@ -103,3 +104,11 @@ main = do
     -- gen :: FilePath -> Proxy api -> name -> IO ()
     gen fp api name = do
         writeAPIModuleWithSettings (defaultSettings & apiModuleName .~ "Gen" `append` name) fp (Proxy :: Proxy RenaissanceBridge) api
+
+data Command =
+    Command { bz      :: Bool
+            , gjanajo :: Bool
+            , to      :: FilePath }
+  deriving (Generic, Show)
+
+instance ParseRecord Command
